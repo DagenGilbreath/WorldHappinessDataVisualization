@@ -19,16 +19,16 @@ fig = go.Figure(data=go.Choropleth(
     z=df1['Score'],
     text=df1['Country'],
     colorscale='sunset',
-    autocolorscale=False,
-    reversescale=True,
+    autocolorscale=True,
+    reversescale=False,
     marker_line_color='darkgray',
-    marker_line_width=0.5,
+    marker_line_width=0.3,
     colorbar_title='Happiness Score',
 ))
-# Choropleth
 
+# Choropleth
 fig.update_layout(
-    title_text='2018 World Happiness',
+    height=500,
     geo=dict(
         showframe=False,
         showcoastlines=False,
@@ -39,8 +39,8 @@ fig.update_layout(
         y=0.1,
         xref='paper',
         yref='paper',
-        text='Source: <a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">\
-            CIA World Factbook</a>',
+        text='Source: <a href="https://www.kaggle.com/unsdsn/world-happiness">\
+                World Happiness Report</a>',
         showarrow=False
     )]
 )
@@ -49,38 +49,40 @@ app = dash.Dash()
 
 YEARS = [2018, 2019]
 # Layout of the Dashboard
-app.layout = html.Div(children=[
+app.layout = html.Div(style={
+        'background': 'white',
+    },
+    children=[
     html.H1(children='World Happiness Dash',
             style={
                 'textAlign': 'center',
-                'color': '#C70039',
-                'font-family': 'Courier New'
+                'color': 'black',
+                'font-family': 'Arial',
+                'background': '#f2eb66',
+                'padding': '10px'
             }
             ),
     # Title of the Website at the top
-    html.Div('Web dashboard for Data Visualization of World Happiness', style={'textAlign': 'center',   'font-family': 'Courier New'}),
+    html.H2('Web dashboard for Data Visualization of World Happiness', style={'textAlign': 'center', 'font-family': 'Arial'}),
     # Subtitle at the top
-    html.Div('World Happiness Based by Region', style={'textAlign': 'center', 'font-family': 'Courier New'}),
-    html.Br(),
-    html.Br(),
-    html.Hr(style={'border-top': 'dashed #C70039'}),
+    html.Hr(style={'border-top': '5px #f2eb66'}),
 
     # Having the Cholorpleth show on the dash board
-    html.H3('Cloropleth Chart', style= {'font-family': 'Courier New'}),
-    html.Div('This shows a world overview of happiness scores', style= {'font-family': 'Courier New'}),
-    dcc.Graph(id="Choropleth", figure=fig),
-
-    # Start of Interactive Bar Chart Start
-    html.H3('Interactive Bar chart', style= {'font-family': 'Courier New'}),
-    html.Div('This bar chart represent the reported world happiness by region and year as well as '
-             'what contributed to the score', style= {'font-family': 'Courier New'}),
-    # Creating the Interactive Bar Chart onto the dash board
-    dcc.Graph(id='graph1', style={'background': '#544F4F'}),
+    html.H1(id="container",
+            style={
+                'background': 'white',
+                'column-count': '2',
+            },
+            children=[
+                dcc.Graph(id="Choropleth", figure=fig,), # Map
+                dcc.Graph(id='graph1', style={'background': '#1e1f1e'}) # Graph Stack Bar
+            ]
+             ),
     # Drop down box title
-    html.Div('Please select a region', style={'color': '#000000', 'margin': '10px', 'font-family': 'Courier New'}),
+    html.Div('Please select a region', style={'color': '#000000', 'margin': '10px', 'font-family': 'Arial'}),
     # Dropdown Menu for Stacked Bar Chart
     dcc.Dropdown(
-        style= {'font-family': 'Courier New'},
+        style= {'font-family': 'Arial'},
         id='select-region',
         options=[
             {'label': 'Australia and New Zealand', 'value': 'Australia and New Zealand'},
@@ -104,7 +106,7 @@ app.layout = html.Div(children=[
                 id="slider-container",
                 children=[
                     html.P(
-                        style= {'font-family': 'Courier New'},
+                        style= {'font-family': 'Arial'},
                         id="slider-text",
                         children="Drag the slider to change the year:",
                     ),
@@ -129,7 +131,7 @@ app.layout = html.Div(children=[
 
 ])
 
-
+#---------------------------------------------------------------------------------------------------------------------
 # Call Back to change the Stacked Bar Chart
 @app.callback(Output('graph1', 'figure'),
               [Input('select-region', "value"),
@@ -176,7 +178,8 @@ def update_figure(selected_region, selected_year):
     return {'data': data_stackbarchart, 'layout': go.Layout(title='Happiness Scores in ' + selected_region + " in year " + str(selected_year),
                                                             xaxis={'title': 'Country'},
                                                             yaxis={'title': 'Happiness Overall'},
-                                                            barmode='stack')}
+                                                            barmode='stack'
+                                                            )}
 
 
 # This is to update the choropleth
@@ -192,32 +195,32 @@ def update_Choropleth(selected_year):
     # Generates new Figure
     fig = go.Figure(data=go.Choropleth(
         locationmode='country names',
-        locations=new_df['Country'],
-        z=new_df['Score'],
-        text=new_df['Country'],
+        locations=df1['Country'],
+        z=df1['Score'],
+        text=df1['Country'],
         colorscale='sunset',
-        autocolorscale=False,
-        reversescale=True,
+        autocolorscale=True,
+        reversescale=False,
         marker_line_color='darkgray',
-        marker_line_width=0.5,
+        marker_line_width=0.3,
         colorbar_title='Happiness Score',
     ))
 
     # Changes the layout of the Choropleth
     fig.update_layout(
-        title_text= str(selected_year) + ' World Happiness',
+        height=500,
         geo=dict(
             showframe=False,
             showcoastlines=False,
-            projection_type='equirectangular'
+            projection_type='equirectangular',
         ),
         annotations=[dict(
             x=0.55,
             y=0.1,
             xref='paper',
             yref='paper',
-            text='Source: <a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">\
-                CIA World Factbook</a>',
+            text='Source: <a href="https://www.kaggle.com/unsdsn/world-happiness">\
+                World Happiness Report</a>',
             showarrow=False
         )]
     )
