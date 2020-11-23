@@ -39,8 +39,8 @@ fig.update_layout(
         y=0.1,
         xref='paper',
         yref='paper',
-        text='Source: <a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">\
-            CIA World Factbook</a>',
+        text='Source: <a href="https://www.kaggle.com/unsdsn/world-happiness">\
+                World Happiness Report</a>',
         showarrow=False
     )]
 )
@@ -68,7 +68,7 @@ app.layout = html.Div(children=[
     # Having the Cholorpleth show on the dash board
     html.H3('Cloropleth Chart', style= {'font-family': 'Courier New'}),
     html.Div('This shows a world overview of happiness scores', style= {'font-family': 'Courier New'}),
-    dcc.Graph(id="Choropleth", figure=fig),
+    dcc.Graph(id="Choropleth", figure=fig, style={'height': '%50', 'width': '%100'}), # more room for map
 
     # Start of Interactive Bar Chart Start
     html.H3('Interactive Bar chart', style= {'font-family': 'Courier New'}),
@@ -205,6 +205,7 @@ def update_Choropleth(selected_year):
 
     # Changes the layout of the Choropleth
     fig.update_layout(
+        height=1000, # height for map, makes it scale larger
         title_text= str(selected_year) + ' World Happiness',
         geo=dict(
             showframe=False,
@@ -216,8 +217,8 @@ def update_Choropleth(selected_year):
             y=0.1,
             xref='paper',
             yref='paper',
-            text='Source: <a href="https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html">\
-                CIA World Factbook</a>',
+            text='Source: <a href="https://www.kaggle.com/unsdsn/world-happiness">\
+                World Happiness Report</a>',
             showarrow=False
         )]
     )
